@@ -1,0 +1,29 @@
+{
+  "name": "takanashi-hoshino",
+  "version": "1.0.0",
+  "description": "Discord Bot Js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XNS-ivy/Takanashi-Hoshino.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "js"
+  ],
+  "author": "XNS-ivy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/XNS-ivy/Takanashi-Hoshino/issues"
+  },
+  "homepage": "https://github.com/XNS-ivy/Takanashi-Hoshino#readme",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
