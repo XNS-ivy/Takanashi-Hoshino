@@ -1,22 +1,14 @@
-import pkg, { Events } from 'discord.js'
-const { Client, GatewayIntentBits, Collection } = pkg
-import 'dotenv/config'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { Client, GatewayIntentBits, Collection, Events } from 'discord.js';
+import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 
-// ------------- ++
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-// ------------- ++
+// __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-
-// -------
-const commandPath = path.join(__dirname, 'commands')
-const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'))
-// -------
-
-
+// Bot Installation
 const hoshino = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -24,39 +16,39 @@ const hoshino = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMembers,
     ],
-})
-hoshino.commands = new Collection()
+});
+hoshino.commands = new Collection();
+
+// Dynamic Commands
+const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-    const filePath = pathToFileURL(path.resolve(commandPath, file));
-    const command = (await import(filePath)).default;
+    const command = (await import(pathToFileURL(path.join(__dirname, 'commands', file)))).default;
     hoshino.commands.set(command.name, command);
+    console.log(command)
 }
 
-hoshino.once(Events.ClientReady, async () => {
-    console.log('Hoshino Ready!')
-})
+// Event: Bot ready
+hoshino.once(Events.ClientReady, () => {
+    console.log('Hoshino Ready!');
+});
 
-hoshino.on(Events.MessageCreate, async message => {
+// Event: pesan
+hoshino.on(Events.MessageCreate, async (message) => {
+    if (message.author.bot || !message.content.startsWith(process.env.prefix)) return;
 
-    // console.log(message) // to see meesage structure
-    // console.log(message.author) // to see author of message
-    // console.log(message.channel) // to see channel of message
+    const args = message.content.slice(process.env.prefix.length).trim().split(/ +/);
+    const commandName = args.shift().toLowerCase();
+    const command = hoshino.commands.get(commandName);
 
-    if (message.author.bot || !message.content.startsWith(process.env.prefix)) return
-    const args = message.content.slice(process.env.prefix.length).trim().split(/ +/g)
-    const commandName = args.shift().toLowerCase()
-    const command = hoshino.commands.get(commandName)
-    if (!command) return
+    if (!command) return;
     try {
-        await command.execute(message, args)
+        await command.execute(message, args);
     } catch (error) {
-        console.error(error)
-        message.reply('Error')
+        console.error(error);
+        message.reply(`Error while execute Commands! :\n${error}`);
     }
+});
 
-})
-
-hoshino.login(process.env.token).catch((err) => {
-    console.log(err)
-})
+// Login bot
+hoshino.login(process.env.token).catch(console.error);
