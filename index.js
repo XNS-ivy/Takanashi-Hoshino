@@ -3,6 +3,7 @@ import 'dotenv/config'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
+import { connectDatabase } from './modules/mongo.js'
 
 // __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url)
@@ -36,14 +37,14 @@ hoshino.once(Events.ClientReady, () => {
 hoshino.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return
 
-    const lowerContent = message.content.toLowerCase();
+    const lowerContent = message.content.toLowerCase()
     if (lowerContent === 'help') {
-        const helpCommand = hoshino.commands.get('menu');
-        if (helpCommand) await helpCommand.execute(message);
+        const helpCommand = hoshino.commands.get('menu')
+        if (helpCommand) await helpCommand.execute(message)
         return
     }
     if (lowerContent === 'prefix') {
-        await message.reply(`Prefix now is : \`${process.env.prefix}\` Senei..`)
+        await message.reply(`Prefix now is : \`${process.env.prefix}\` Sensei..`)
         return
     }
 
@@ -61,8 +62,10 @@ hoshino.on(Events.MessageCreate, async (message) => {
         console.error(error)
         message.reply('Gomenne Sensei looks like there was an error executing that command!')
     }
-});
+})
 
 
 // Login bot
-hoshino.login(process.env.token).catch(console.error)
+connectDatabase().then(async () => {
+    await hoshino.login(process.env.token).catch(console.error)
+}).catch(console.error)
