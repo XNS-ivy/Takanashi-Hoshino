@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js'
 
 export default {
     name: 'menu',
@@ -8,7 +8,7 @@ export default {
         const commands = message.client.commands
 
         // Organize commands by menu and type
-        const commandCategories = {}
+        const commandCategories = {};
         commands.forEach(cmd => {
             if (!cmd.menu || !cmd.type || cmd.type === 'dontDisplay') return
 
@@ -16,7 +16,7 @@ export default {
                 commandCategories[cmd.menu] = { main: [], sub: [] }
             }
             commandCategories[cmd.menu][cmd.type].push(cmd)
-        });
+        })
 
         // Build embed
         const embed = new EmbedBuilder()
@@ -26,16 +26,24 @@ export default {
 
         Object.keys(commandCategories).forEach(menu => {
             const { main, sub } = commandCategories[menu]
-            let mainCommands = main.map(cmd => `\`${process.env.prefix}${cmd.name}\`: ${cmd.description || 'No description'}`).join('\n')
-            let subCommands = sub.map(cmd => `\`${process.env.prefix}${cmd.name}\`: ${cmd.description || 'No description'}`).join('\n')
+
+            // Combine main and subcommands in a single field
+            const commandsList = main.map(mainCmd => {
+                // Find subcommands related to this main command
+                const relatedSubCommands = sub
+                    .filter(subCmd => subCmd.menu === mainCmd.menu)
+                    .map(subCmd => `\t\`${process.env.prefix}${subCmd.name}\`: ${subCmd.description || 'No description'}`)
+                    .join('\n')
+
+                return `\`${process.env.prefix}${mainCmd.name}\`: ${mainCmd.description || 'No description'}\n${relatedSubCommands}`
+            }).join('\n')
 
             embed.addFields([
-                { name: `**${menu.toUpperCase()}**`, value: mainCommands || '*No main commands available.*' },
-                { name: '\u200B', value: subCommands ? `**Subcommands:**\n${subCommands}` : '\u200B', inline: true },
+                { name: `**${menu.toUpperCase()}**`, value: commandsList || '*No commands available.*' },
             ])
-        })
+        });
 
         // Send embed
         await message.reply({ embeds: [embed] })
     },
-};
+}
