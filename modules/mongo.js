@@ -1,15 +1,17 @@
-import 'dotenv/config'
-import { MongoClient } from 'mongodb'
+import 'dotenv/config';
+import mongoose from 'mongoose';
 
-const mongoClient = new MongoClient(process.env.mongo_url)
- async function connectDatabase() {
-    try {
-        await mongoClient.connect()
-    } catch (error) {
-      console.error('Error connecting to MongoDB:', error)
-    }
- }
+async function connectDatabase() {
+   try {
+      await mongoose.connect(process.env.mongo_uri, {
+         serverSelectionTimeoutMS: 500000,
+      });
+      console.log('Successfully connected to MongoDB')
+   } catch (error) {
+      console.error('Error connecting to MongoDB:', error.message)
+   }
+}
 
- export {
-    connectDatabase
- }
+export {
+   connectDatabase,
+}

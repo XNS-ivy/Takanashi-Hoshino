@@ -1,13 +1,13 @@
-import { Client, GatewayIntentBits, Collection, Events } from 'discord.js';
-import 'dotenv/config';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
-import { connectDatabase } from './modules/mongo.js';
+import { Client, GatewayIntentBits, Collection, Events } from 'discord.js'
+import 'dotenv/config'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
+import { connectDatabase } from './modules/mongo.js'
 
 // __dirname for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Bot Installation
 const hoshino = new Client({
@@ -18,7 +18,7 @@ const hoshino = new Client({
         GatewayIntentBits.GuildMembers,
     ],
 });
-hoshino.commands = new Collection();
+hoshino.commands = new Collection()
 
 /**
  * Function to recursively read command files from directories
@@ -26,14 +26,14 @@ hoshino.commands = new Collection();
  * @returns {Array<string>} - Array of file paths
  */
 function getCommandFiles(dir) {
-    const files = fs.readdirSync(dir, { withFileTypes: true });
-    const commandFiles = [];
+    const files = fs.readdirSync(dir, { withFileTypes: true })
+    const commandFiles = []
     for (const file of files) {
         const filePath = path.join(dir, file.name);
         if (file.isDirectory()) {
             commandFiles.push(...getCommandFiles(filePath));
         } else if (file.isFile() && file.name.endsWith('.js')) {
-            commandFiles.push(filePath);
+            commandFiles.push(filePath)
         }
     }
     return commandFiles;
@@ -43,9 +43,9 @@ function getCommandFiles(dir) {
 const commandFiles = getCommandFiles(path.join(__dirname, 'commands'));
 
 for (const file of commandFiles) {
-    const command = (await import(pathToFileURL(file))).default;
+    const command = (await import(pathToFileURL(file))).default
     if (command && command.name) {
-        hoshino.commands.set(command.name, command);
+        hoshino.commands.set(command.name, command)
     } else {
         console.warn(`Command file ${file} is missing a valid 'name' property.`)
     }
@@ -86,6 +86,6 @@ hoshino.on(Events.MessageCreate, async (message) => {
 });
 
 // Login bot
-connectDatabase().then(async () => {
+await connectDatabase().then(async () => {
     await hoshino.login(process.env.token).catch(console.error)
 }).catch(console.error)
