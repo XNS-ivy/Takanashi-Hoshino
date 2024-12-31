@@ -13,5 +13,5 @@ Create a `.env` file in the root directory of your project with the following co
 ```bash dotenv
 token=YOUR_TOKEN_HERE
 prefix=CUSTOM_PREFIX # Example: $
-mongo_url=YOUR_MONGO_URL
+mongo_uri=YOUR_MONGO_URL
 ```
