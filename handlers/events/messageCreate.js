@@ -1,7 +1,20 @@
 import { handleMessage } from '../helpHandle.js'
 
 export default async function onMessageCreate(message, commands) {
-    if (message.author.bot) return
+    // console.log(message.author) // <--- Display the user who sent the message
+    // console.log(message.content) // <--- Display the message content
+    // console.log(message.channel) // <--- Display the channel where the message was sent
+    // console.log(message.guild) // <--- Display the server where the message was sent
+    // console.log(message.member) // <--- Display the member who sent the message
+    // console.log(message.attachments) // <--- Display the attachments of the message
+    // console.log(message.mentions) // <--- Display the mentioned users in the message
+    // console.log(message.mentions.users) // <--- Display the mentioned users in the message
+    // console.log(message.mentions.roles) // <--- Display the mentioned roles in the message
+    // console.log(message.mentions.every()) // <--- Display every mention in the message
+    // console.log(message.mentions.roles.cache) // <--- Display every mention in the message
+    // console.log(message.mentions.roles.cache.size) // <--- Display every mention in the messag
+    // console.log(message.mentions.roles.cache.size) // <--- Display every mention in the messag
+    // console.log(message.mentions.roles.cache.size) // <--- Display every mention in the mess
 
     const handled = await handleMessage(message, commands)
     if (handled) return

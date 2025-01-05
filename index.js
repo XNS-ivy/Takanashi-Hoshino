@@ -22,16 +22,41 @@ const hoshino = new Client({
 })
 hoshino.commands = new Collection()
 
-// Load Commands
-await loadCommands(hoshino.commands, path.join(__dirname, 'commands'))
+// Validate .env
+if (!process.env.token) {
+    console.error('Discord bot token is not set in .env file')
+    process.exit(1)
+}
 
-// Event: Bot Ready
-hoshino.once(Events.ClientReady, () => onReady(hoshino))
+try {
+    // Load Commands
+    await loadCommands(hoshino.commands, path.join(__dirname, 'commands'))
 
-// Event: Message Create
-hoshino.on(Events.MessageCreate, (message) => onMessageCreate(message, hoshino.commands))
+    // Event: Bot Ready
+    hoshino.once(Events.ClientReady, () => onReady(hoshino))
 
-// Connect to Database and Login Bot
-await connectDatabase()
-    .then(async () => await hoshino.login(process.env.token))
-    .catch(console.error)
+    // Event: Message Create
+    hoshino.on(Events.MessageCreate, (message) => onMessageCreate(message, hoshino.commands))
+
+    // Connect to Database and Login Bot
+    await connectDatabase()
+    await hoshino.login(process.env.token)
+} catch (error) {
+    console.error('Error during initialization:', error)
+    process.exit(1)
+}
+
+// Global Error Handling
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error)
+    process.exit(1)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason)
+    process.exit(1)
+})
+
+process.on('rejectionHandled', (promise) => {
+    console.warn('Promise handled after rejection:', promise)
+})
