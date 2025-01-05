@@ -7,15 +7,13 @@ export default {
     menu: 'wikipedia',
     type: 'main',
     execute: async (message, args) => {
-        if (!args.length) {
+        const country = args[0]
+        const query = args.slice(1).join(' ')
+        if (!args.length || !query) {
             return message.reply(
                 `Please provide a country code and a search query.\nExample: \`${process.env.prefix}wiki en France\``
             )
         }
-
-        const country = args[0];
-        const query = args.slice(1).join(' ')
-
         try {
             const article = await wiki(country, query)
 
