@@ -1,3 +1,6 @@
+import './src/misc//asciiart.js'
+import './src/misc/asciistart.js'
+
 import { Client, GatewayIntentBits, Collection, Events } from 'discord.js'
 import 'dotenv/config'
 import path from 'path'
