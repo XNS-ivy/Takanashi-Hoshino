@@ -3,7 +3,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 /**
- * @function connectMongoDB - connecting to mongodb if not connected stop the code
+ * this is a connect mongo function if this error will stop the code running
+ * @function connectMongoDB - connecting to mongodb
  * @constant {string} uri - mongodb connection string from .env mongo_uri=
  * @function mongoose.connect(uri) - connect to mongodb
  */

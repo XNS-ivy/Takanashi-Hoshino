@@ -1,10 +1,12 @@
-import { makeWASocket, useMultiFileAuthState } from '@whiskeysockets/baileys'
-import pino from 'pino'
-import { connectionHandle } from '../handlers/socketConnection.js'
-import { handlingMessage } from '../handlers/events/mesageHandler.js'
+import { makeWASocket, useMultiFileAuthState } from '@whiskeysockets/baileys';
+import pino from 'pino';
+import { connectionHandle } from '../handlers/socketConnection.js';
+import { handlingMessage } from '../handlers/events/mesageHandler.js';
+import { loadCommands } from './commandLoader.js';
+import fs from 'fs';
 
 async function start() {
-    const { state, saveCreds } = await useMultiFileAuthState("auth")
+    const { state, saveCreds } = await useMultiFileAuthState('auth')
     const shiroko = makeWASocket({
         printQRInTerminal: true,
         auth: state,
@@ -13,19 +15,39 @@ async function start() {
         emitOwnEvents: false,
     })
 
-    try {
-    shiroko.ev.on('connection.update', async (update) => {
-        await connectionHandle(update)
-    })
+    const config = JSON.parse(fs.readFileSync('./shirokoConfig.json', 'utf-8'))
+    const prefix = config.prefix
 
-    shiroko.ev.on('creds.update', async () => {
-        await saveCreds()
-    })
-    shiroko.ev.on('messages.upsert', async (message) =>{
-        const msg = await handlingMessage(message)
-    })
+    const commands = loadCommands('./commands')
+
+    try {
+        shiroko.ev.on('connection.update', async (update) => {
+            await connectionHandle(update)
+        })
+
+        shiroko.ev.on('creds.update', async () => {
+            await saveCreds()
+        })
+
+        shiroko.ev.on('messages.upsert', async (message) => {
+            const msg = await handlingMessage(message)
+            if (msg.text) {
+                if (!msg.text.startsWith(prefix)) {
+                    return
+                }
+
+                const [commandName, ...args] = msg.text.slice(prefix.length).trim().split(/\s+/)
+                const command = commands.get(commandName)
+
+                if (command) {
+                    await command.execute(shiroko, msg, args, message.messages[0])
+                } else {
+                    console.log(`Command "${commandName}" tidak ditemukan.`)
+                }
+            }
+        })
     } catch (error) {
-        console.error('Error : ', error)
+        console.error('Error:', error)
         process.exit(1)
     }
 }

@@ -1,6 +1,10 @@
 import fs from 'fs/promises'
 import { start } from '../modules/waSocket.js'
 
+/**
+ * Handling Connection Update
+ * @param {*} update - the connection state  
+ */
 export async function connectionHandle(update) {
     const { connection, lastDisconnect } = update
     if (connection === 'close') {
