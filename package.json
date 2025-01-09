@@ -1,0 +1,27 @@
+{
+  "name": "shiroko-sunaookami",
+  "version": "1.0.0",
+  "description": "Whatsapp Web.js using wweb.js by pedro lopez",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XNS-ivy/Shiroko-Sunaookami.git"
+  },
+  "keywords": [],
+  "author": "XNS-ivy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/XNS-ivy/Shiroko-Sunaookami/issues"
+  },
+  "homepage": "https://github.com/XNS-ivy/Shiroko-Sunaookami#readme",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.9.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
