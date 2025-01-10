@@ -13,6 +13,7 @@ async function start() {
         logger: pino({ level: 'silent' }),
         browser: ['Shiroko', 'Chrome', '1.0'],
         emitOwnEvents: false,
+        generateHighQualityLinkPreview: true,
     })
 
     const config = JSON.parse(fs.readFileSync('./shirokoConfig.json', 'utf-8'))
@@ -31,7 +32,7 @@ async function start() {
 
         shiroko.ev.on('messages.upsert', async (message) => {
             const msg = await handlingMessage(message)
-            if (msg.text) {
+            if (msg?.text) {
                 if (!msg.text.startsWith(prefix)) {
                     return
                 }
@@ -42,7 +43,7 @@ async function start() {
                 if (command) {
                     await command.execute(shiroko, msg, args, message.messages[0])
                 } else {
-                    console.log(`Command "${commandName}" tidak ditemukan.`)
+                    await shiroko.sendMessage(msg.remoteJid, { text: "Command Not Found!" }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                 }
             }
         })

@@ -21,6 +21,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.9",
     "dotenv": "^16.4.7",
+    "jimp": "^0.16.13",
     "mongoose": "^8.9.2",
     "qrcode-terminal": "^0.12.0"
   }
