@@ -17,5 +17,5 @@ function textMessage(response, client, expired) {
 
 export {
     imageMessage,
-    textMessage
+    textMessage,
 }
