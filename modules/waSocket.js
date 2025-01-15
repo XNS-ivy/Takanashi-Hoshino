@@ -19,7 +19,6 @@ async function start() {
     const config = JSON.parse(fs.readFileSync('./shirokoConfig.json', 'utf-8'))
     const prefix = config.prefix;
 
-    // Await loadCommands to ensure it returns the Map
     const commands = await loadCommands('./commands')
 
     try {
