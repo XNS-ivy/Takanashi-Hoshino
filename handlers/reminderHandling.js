@@ -19,7 +19,7 @@ export async function handlingReminder(args) {
             h: 'hours',
             d: 'days',
             y: 'years',
-            M: 'months'  // Tambahkan dukungan untuk bulan
+            M: 'months',
         }[unitChar]
 
         if (unit) {
