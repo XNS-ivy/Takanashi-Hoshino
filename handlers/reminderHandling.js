@@ -5,47 +5,92 @@ export async function handlingReminder(args) {
         return 'Invalid input: args must be a non-empty array.'
     }
 
+    let task = ''
+    const timeRegex = /(\d+)([smhdMy])/g
+    let match;
+    const unitsSeen = new Set()
+    let timePartDetected = false
+
+    for (let i = 0; i < args.length; i++) {
+        const possibleTimeArg = args[i].toLowerCase()
+        if (timeRegex.test(possibleTimeArg)) {
+            timePartDetected = true
+            while ((match = timeRegex.exec(possibleTimeArg)) !== null) {
+                const value = parseInt(match[1], 10)
+                const unitChar = match[2]
+                const unit = {
+                    s: 'seconds',
+                    m: 'minutes',
+                    h: 'hours',
+                    d: 'days',
+                    y: 'years',
+                    M: 'months',
+                }[unitChar]
+
+                if (unitsSeen.has(unitChar)) {
+                    return `Duplicate time unit detected: ${unitChar} is used more than once.`
+                }
+
+                if (unit) {
+                    unitsSeen.add(unitChar)
+                } else {
+                    return 'Invalid time unit'
+                }
+            }
+        } else {
+            if (timePartDetected) {
+                task += args.slice(i).join(' ')
+                break
+            } else {
+                task += args[i] + ' '
+            }
+        }
+    }
+
+    if (!task.trim()) {
+        return 'No task specified. Please provide a task before the time.'
+    }
+
     const currentTime = moment()
     let reminderTime = currentTime.clone().add(1, 'minute')
-    let task = args.slice(0, -1).join(' ')
-    const possibleTimeArg = args[args.length - 1].toLowerCase()
 
-    if (/^\d+[smhdyM]$/.test(possibleTimeArg)) {
-        const value = parseInt(possibleTimeArg.slice(0, -1), 10)
-        const unitChar = possibleTimeArg.slice(-1)
-        const unit = {
-            s: 'seconds',
-            m: 'minutes',
-            h: 'hours',
-            d: 'days',
-            y: 'years',
-            M: 'months',
-        }[unitChar]
+    if (timePartDetected) {
+        for (let i = 0; i < args.length; i++) {
+            const possibleTimeArg = args[i].toLowerCase()
+            if (timeRegex.test(possibleTimeArg)) {
+                while ((match = timeRegex.exec(possibleTimeArg)) !== null) {
+                    const value = parseInt(match[1], 10)
+                    const unitChar = match[2]
+                    const unit = {
+                        s: 'seconds',
+                        m: 'minutes',
+                        h: 'hours',
+                        d: 'days',
+                        y: 'years',
+                        M: 'months',
+                    }[unitChar]
 
-        if (unit) {
-            reminderTime = currentTime.clone().add(value, unit)
-        } else {
-            return 'Invalid time unit'
+                    if (unit) {
+                        reminderTime = reminderTime.add(value, unit)
+                    }
+                }
+            }
         }
-    } else if (/^\d{1,2}:\d{2}$/.test(possibleTimeArg)) {
-        const [hour, minute] = possibleTimeArg.split(':').map(Number)
-        reminderTime = currentTime.clone().hours(hour).minutes(minute).seconds(0)
-        reminderTime = reminderTime.isBefore(currentTime) ? reminderTime.add(1, 'days') : reminderTime
-    } else if (moment(possibleTimeArg, ['D MMM YYYY HH:mm', 'D MMM YYYY', 'DD MM YYYY', 'D MMMM YYYY HH:mm', 'D MMMM YYYY'], true).isValid()) {
-        reminderTime = moment(possibleTimeArg, ['D MMM YYYY HH:mm', 'D MMM YYYY', 'DD MM YYYY', 'D MMMM YYYY HH:mm', 'D MMMM YYYY'], true)
-    } else {
-        task = args.join(' ')
     }
 
     if (!reminderTime.isValid()) {
         return 'Invalid time format'
     }
 
-    return { task, date: reminderTime.format('YYYY-MM-DD HH:mm:ss') }
+    return { task: task.trim(), date: reminderTime.format('YYYY-MM-DD HH:mm:ss') }
 }
 
 // Example usage
-// console.log(await handlingReminder(['need', 'money', '1m'])); // { task: 'need money', date: '...' }
+// console.log(await handlingReminder(['need', 'money', '9h', '20m', '1d'])); // { task: 'need money', date: '...' }
 // console.log(await handlingReminder(['meeting', '10:30'])); // { task: 'meeting', date: '...' }
 // console.log(await handlingReminder(['birthday', 'party', '12 July 2025'])); // { task: 'birthday party', date: '...' }
 // console.log(await handlingReminder(['invalid', 'format'])); // { task: 'invalid format', date: '...' }
+// console.log(await handlingReminder(['project', 'deadline', '3d', '4h'])); // { task: 'project deadline', date: '...' }
+// console.log(await handlingReminder(['long', 'vacation', '2y', '5m'])); // { task: 'long vacation', date: '...' }
+// console.log(await handlingReminder(['need', 'money', '1m', '5s'])); // { task: 'need money', date: '...' }
+// console.log(await handlingReminder(['1m', '1s'])); // 'No task specified. Please provide a task before the time.'
