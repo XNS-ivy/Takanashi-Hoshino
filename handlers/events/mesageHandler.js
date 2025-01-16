@@ -10,7 +10,7 @@ function customMessage(msg) {
     const messageObj = msg?.messages[0]
     const name = messageObj?.pushName
     const { remoteJid, id, participant } = messageObj?.key || {}
-    const participantName = participant ?? 'private-message'
+    const participantName = participant ?? remoteJid
 
     const objectMessageType =
         Object.keys(messageObj?.message || {})[0] == 'senderKeyDistributionMessage' ?
@@ -32,7 +32,7 @@ function customMessage(msg) {
     return {
         name: name ?? undefined,
         remoteJid: remoteJid ?? undefined,
-        participant: participantName ?? undefined,
+        phoneNumber: participantName ?? undefined,
         id: id ?? undefined,
         text: text ?? undefined,
         object: objectMessageType ?? undefined,

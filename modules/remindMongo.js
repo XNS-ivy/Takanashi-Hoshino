@@ -11,7 +11,7 @@ import Reminder from './reminderModel.js'
  */
 export async function saveReminder(reminderData) {
     try {
-        const { user, task, reminderDate, ephemeralExpiration = 0 } = reminderData;
+        const { user, phoneNumber, task, reminderDate, ephemeralExpiration = 0 } = reminderData;
 
         // Validate required fields
         if (!user || !task || !reminderDate) {
@@ -21,6 +21,7 @@ export async function saveReminder(reminderData) {
         // Create a new reminder document
         const reminder = new Reminder({
             user,
+            phoneNumber,
             task,
             reminderDate,
             ephemeralExpiration,
@@ -28,7 +29,6 @@ export async function saveReminder(reminderData) {
 
         // Save the reminder to the database
         const savedReminder = await reminder.save();
-        console.log(`Reminder saved: ${savedReminder._id}`);
 
         // Return the ID of the saved reminder
         return savedReminder._id;

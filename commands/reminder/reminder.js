@@ -15,12 +15,12 @@ export default {
                 
                 const reminderId = await saveReminder({
                     user: msg.remoteJid,
+                    phoneNumber: msg.phoneNumber,
                     task: remind.task,
                     reminderDate: remind.date,
                     ephemeralExpiration: ephemeralSeconds,
-                });
-
-                response = `Reminder "${remind.task}" saved! You will be reminded on ${remind.date}.`
+                })
+                response = `Task Reminder : "${remind.task}" saved! You will be reminded on ${remind.date}.`
             } else {
                 response = remind
             }

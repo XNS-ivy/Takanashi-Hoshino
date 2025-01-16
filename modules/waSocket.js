@@ -4,9 +4,10 @@ import { connectionHandle } from '../handlers/socketConnection.js'
 import { handlingMessage } from '../handlers/events/mesageHandler.js'
 import { loadCommands } from './commandLoader.js'
 import fs from 'fs'
+import { checkDueReminders } from './checkReminder.js'
 
 async function start() {
-    const { state, saveCreds } = await useMultiFileAuthState('auth');
+    const { state, saveCreds } = await useMultiFileAuthState('auth')
     const shiroko = makeWASocket({
         printQRInTerminal: true,
         auth: state,
@@ -17,7 +18,7 @@ async function start() {
     })
 
     const config = JSON.parse(fs.readFileSync('./shirokoConfig.json', 'utf-8'))
-    const prefix = config.prefix;
+    const prefix = config.prefix
 
     const commands = await loadCommands('./commands')
 
@@ -47,6 +48,10 @@ async function start() {
                 }
             }
         })
+        setInterval(async () => {
+            await checkDueReminders(shiroko)
+        }, 10000)
+
     } catch (error) {
         console.error('Error:', error)
         process.exit(1)
