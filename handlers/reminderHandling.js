@@ -10,10 +10,23 @@ export async function handlingReminder(args) {
     let task = args.slice(0, -1).join(' ')
     const possibleTimeArg = args[args.length - 1].toLowerCase()
 
-    if (/^\d+[smhdy]$/.test(possibleTimeArg)) {
+    if (/^\d+[smhdyM]$/.test(possibleTimeArg)) {
         const value = parseInt(possibleTimeArg.slice(0, -1), 10)
-        const unit = { s: 'seconds', m: 'minutes', h: 'hours', d: 'days', y: 'years' }[possibleTimeArg.slice(-1)]
-        reminderTime = currentTime.clone().add(value, unit)
+        const unitChar = possibleTimeArg.slice(-1)
+        const unit = {
+            s: 'seconds',
+            m: 'minutes',
+            h: 'hours',
+            d: 'days',
+            y: 'years',
+            M: 'months'  // Tambahkan dukungan untuk bulan
+        }[unitChar]
+
+        if (unit) {
+            reminderTime = currentTime.clone().add(value, unit)
+        } else {
+            return 'Invalid time unit'
+        }
     } else if (/^\d{1,2}:\d{2}$/.test(possibleTimeArg)) {
         const [hour, minute] = possibleTimeArg.split(':').map(Number)
         reminderTime = currentTime.clone().hours(hour).minutes(minute).seconds(0)
