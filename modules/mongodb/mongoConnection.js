@@ -4,8 +4,8 @@ dotenv.config()
 
 /**
  * this is a connect mongo function if this error will stop the code running
- * @function connectMongoDB - connecting to mongodb
- * @constant {string} uri - mongodb connection string from .env mongo_uri=
+ * @function connectMongoDB() - connecting to mongodb
+ * @param {string} uri - mongodb connection string from .env mongo_uri=
  * @function mongoose.connect(uri) - connect to mongodb
  */
 

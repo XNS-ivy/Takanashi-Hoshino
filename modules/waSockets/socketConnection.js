@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { start } from '../modules/waSocket.js'
+import { start } from './waSocket.js'
 
 /**
  * Handling Connection Update

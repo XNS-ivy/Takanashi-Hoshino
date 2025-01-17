@@ -1,10 +1,9 @@
 import { makeWASocket, useMultiFileAuthState } from '@whiskeysockets/baileys'
 import pino from 'pino'
-import { connectionHandle } from '../handlers/socketConnection.js'
-import { handlingMessage } from '../handlers/events/mesageHandler.js'
-import { loadCommands } from './commandLoader.js'
+import { connectionHandle } from './socketConnection.js'
+import { handlingMessage } from '../../handlers/waSockets/messageHandler.js'
+import { loadCommands } from '../commandLoader.js'
 import fs from 'fs'
-import { checkDueReminders } from './checkReminder.js'
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
@@ -48,10 +47,6 @@ async function start() {
                 }
             }
         })
-        setInterval(async () => {
-            await checkDueReminders(shiroko)
-        }, 10000)
-
     } catch (error) {
         console.error('Error:', error)
         process.exit(1)
