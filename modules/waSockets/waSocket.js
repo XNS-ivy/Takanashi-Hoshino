@@ -4,6 +4,8 @@ import { connectionHandle } from './socketConnection.js'
 import { handlingMessage } from '../../handlers/waSockets/messageHandler.js'
 import { loadCommands } from '../commandLoader.js'
 import fs from 'fs'
+import { sendReminder } from '../reminders/reminder.js'
+import schedule from 'node-schedule'
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
@@ -46,6 +48,9 @@ async function start() {
                     await shiroko.sendMessage(msg.remoteJid, { text: "Command Not Found!" }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                 }
             }
+        })
+        schedule.scheduleJob('*/5 * * * * *', async () => {
+            await sendReminder(shiroko)
         })
     } catch (error) {
         console.error('Error:', error)

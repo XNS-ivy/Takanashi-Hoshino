@@ -1,4 +1,5 @@
-import moment from "moment"
+import Reminder from '../../models/reminders/reminderModel.js'
+import moment from 'moment'
 
 export async function handlingReminder(args) {
     const querymap = {
@@ -7,12 +8,24 @@ export async function handlingReminder(args) {
         list: args[0] === 'list',
     }
 
+    if (!querymap.add && !querymap.delete && !querymap.list) {
+        return `Invalid query. Use 'add', 'delete', or 'list' as the first argument`
+    }
+
     let task, time, errorMessage = null
 
-    if (querymap?.add) {
+    if (querymap.add) {
         const input = args.slice(1).join(' ')
         const parts = input.split('-')
         task = parts[0]?.trim()
+
+        const existingReminder = await Reminder.findOne({
+            'reminders.task': task
+        })
+
+        if (existingReminder) {
+            return `Invalid: Task "${task}" already exists! Please use a different task name.`
+        }
 
         if (parts[1]) {
             const timeInput = parts[1].trim()
@@ -35,20 +48,22 @@ export async function handlingReminder(args) {
                 }
             }
         }
-    } else if (querymap?.delete) {
-        task = args.slice(1).join(' ')
-    } else if (querymap?.list) {
-        // Placeholder for query "list"
-    }
 
-    if (!querymap?.add || !querymap?.delete || !querymap?.list) {
-        return `Invalid query. Use 'add', 'delete', or 'list' as the first argument`
-    } else {
         return {
             task: task ?? false,
             time: time ?? false,
-            error: errorMessage ?? null,
             query: querymap,
+        }
+    } else if (querymap.delete) {
+        task = args.slice(1).join(' ')
+        
+        return {
+            task: task,
+            query: querymap,
+        }
+    } else if (querymap.list) {
+        return {
+            query: querymap
         }
     }
 }
