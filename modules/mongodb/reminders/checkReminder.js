@@ -13,7 +13,6 @@ export async function checkReminder() {
                 if (item.status === 'pending' && moment(item.reminderDate).isSameOrBefore(now)) {
                     results.push({
                         user: reminder.user,
-                        phoneNumber: reminder.phoneNumber,
                         task: item.task,
                         reminderDate: item.reminderDate,
                         messageExpired: item.ephemeralExpiration,
@@ -35,7 +34,6 @@ export async function checkReminder() {
 export async function listReminder(id) {
     try {
         const reminders = await Reminder.findOne({ 'user': id }, { 'reminders.task': 1, 'reminders.reminderDate': 1 })
-
         if (!reminders?.reminders?.length) {
             return "No reminders found for this user."
         }

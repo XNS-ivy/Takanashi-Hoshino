@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 
 const reminderSchema = new mongoose.Schema({
     user: { type: String, required: true, unique: true },
-    phoneNumber: { type: String, required: false, default: '' },
     reminders: [
         {
             task: { type: String, required: true },

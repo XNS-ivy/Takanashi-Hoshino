@@ -1,6 +1,6 @@
 import Reminder from '../../../models/reminders/reminderModel.js'
 
-export async function saveReminderToMongo(id, phoneNumber, { task, time }, messageExpiration) {
+export async function saveReminderToMongo(id, { task, time }, messageExpiration) {
     try {
         const userReminder = await Reminder.findOne({ user: id })
 
@@ -15,7 +15,6 @@ export async function saveReminderToMongo(id, phoneNumber, { task, time }, messa
         } else {
             const newReminder = new Reminder({
                 user: id,
-                phoneNumber,
                 reminders: [
                     {
                         task,
@@ -30,6 +29,7 @@ export async function saveReminderToMongo(id, phoneNumber, { task, time }, messa
 
         return `Task Reminder '${task}' Saved Successfully \nWill Be Sent At ${time}`
     } catch (error) {
+        console.error(error)
         return 'Error While Saving Reminder to Mongo: ' + error.message
     }
 }

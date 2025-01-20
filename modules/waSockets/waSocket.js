@@ -7,9 +7,18 @@ import fs from 'fs'
 import { sendReminder } from '../reminders/reminder.js'
 import schedule from 'node-schedule'
 
+/**
+ * @type {makeWASocket | null} WhatsApp socket instance, initialized after start().
+ */
+let shiroko = null;
+
+/**
+ * Starts the WhatsApp socket connection and sets up handlers.
+ * @returns {Promise<void>} Initializes the WhatsApp bot.
+ */
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
-    const shiroko = makeWASocket({
+    shiroko = makeWASocket({
         printQRInTerminal: true,
         auth: state,
         logger: pino({ level: 'silent' }),
@@ -43,7 +52,7 @@ async function start() {
                 const command = commands.get(commandName)
 
                 if (command) {
-                    await command.execute(shiroko, msg, args, message.messages[0])
+                    await command.execute(msg, args, message.messages[0])
                 } else {
                     await shiroko.sendMessage(msg.remoteJid, { text: "Command Not Found!" }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                 }
@@ -58,4 +67,4 @@ async function start() {
     }
 }
 
-export { start }
+export { start, shiroko }

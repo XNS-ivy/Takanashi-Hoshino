@@ -8,10 +8,10 @@ export async function sendReminder(shiroko) {
     }
 
     tasks.forEach(async (task) => {
-        const { user, phoneNumber, task: taskName, reminderDate, messageExpired } = task
+        const { user, task: taskName, reminderDate, messageExpired } = task
 
-        const response = `Task Reminder: ${taskName} Is Due Now!\n\n @${phoneNumber.split('@')[0]} - ${reminderDate}`
-        shiroko.sendMessage(user, { text: response, mentions: [phoneNumber] }, { ephemeralExpiration: messageExpired })
+        const response = `Task Reminder: ${taskName} Is Due Now!\n\n @${user.split('@')[0]} - ${reminderDate}`
+        shiroko.sendMessage(user, { text: response, mentions: [user] }, { ephemeralExpiration: messageExpired })
         await deleteReminders()
     })
 }
