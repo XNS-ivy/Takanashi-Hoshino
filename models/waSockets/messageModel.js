@@ -7,9 +7,11 @@ function imageMessage(url, client, expired, caption) {
     return content
 }
 
-function textMessage(response, client, expired) {
+function textMessage(response, client, expired, mention) {
     const content = {
-        text: { text: response },
+        text: { text: response ,
+            mentions: mention ?? null,
+        },
         options: { quoted: client, ephemeralExpiration: expired }
     }
     return content

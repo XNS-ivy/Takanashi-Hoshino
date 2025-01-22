@@ -16,6 +16,7 @@ let shiroko = null;
  * Starts the WhatsApp socket connection and sets up handlers.
  * @returns {Promise<void>} Initializes the WhatsApp bot.
  */
+
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
     shiroko = makeWASocket({
