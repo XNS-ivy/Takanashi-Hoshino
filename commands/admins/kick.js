@@ -1,5 +1,5 @@
 import { shiroko } from "../../modules/waSockets/waSocket.js"
-import { checkAdmins } from "../../handlers/admins/checkAdmins.js"
+import { checkAdmins } from "../../handlers/waSockets/checkAdmins.js"
 import { textMessage } from '../../models/waSockets/messageModel.js'
 
 export default {

@@ -133,3 +133,7 @@ dist
 auth
 test.*
 note.*
+
+# ignore discloud
+discloud.config
+discloud.*

@@ -18,6 +18,9 @@ async function loadCommands(dir = './commands') {
             try {
                 const module = await import(fileUrl)
                 if (module.default && module.default.name) {
+                    if (module.default.type === 'helps') {
+                        continue
+                    }
                     commands.set(module.default.name, module.default)
                 }
             } catch (err) {

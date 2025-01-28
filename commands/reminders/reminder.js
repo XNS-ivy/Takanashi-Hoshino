@@ -4,10 +4,6 @@ import { textMessage } from '../../models/waSockets/messageModel.js'
 import { deleteReminders, listReminder } from '../../modules/mongodb/reminders/checkReminder.js'
 import { shiroko } from '../../modules/waSockets/waSocket.js'
 
-/**
- * @param {import('@whiskeysockets/baileys').makeWASocket} shiroko WhatsApp socket instance.
- */
-
 export default {
     name: "remind",
     type: "reminder",
