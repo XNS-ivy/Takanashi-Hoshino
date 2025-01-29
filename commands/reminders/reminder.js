@@ -5,7 +5,7 @@ import { deleteReminders, listReminder } from '../../modules/mongodb/reminders/c
 import { shiroko } from '../../modules/waSockets/waSocket.js'
 
 export default {
-    name: "remind",
+    name: "reminder",
     type: "reminder",
     execute: async (msg, args, client) => {
         const taskAndTime = await handlingReminder(args)

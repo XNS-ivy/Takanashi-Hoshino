@@ -1,20 +1,24 @@
 import Reminder from '../../../models/reminders/reminderModel.js'
-import moment from 'moment'
+import moment from 'moment-timezone'
+
+const TIMEZONE = 'Asia/Jakarta'
 
 export async function checkReminder() {
     try {
         const pendingReminders = await Reminder.find({ 'reminders.status': 'pending' })
 
-        const now = moment()
+        const now = moment().tz(TIMEZONE)
         const results = []
 
         for (const reminder of pendingReminders) {
             for (const item of reminder.reminders) {
-                if (item.status === 'pending' && moment(item.reminderDate).isSameOrBefore(now)) {
+                const reminderDate = moment(item.reminderDate).tz(TIMEZONE)
+                
+                if (item.status === 'pending' && reminderDate.isSameOrBefore(now)) {
                     results.push({
                         user: reminder.user,
                         task: item.task,
-                        reminderDate: item.reminderDate,
+                        reminderDate: reminderDate.format("YYYY-MM-DD HH:mm:ss"),
                         messageExpired: item.ephemeralExpiration,
                     })
 
@@ -33,13 +37,18 @@ export async function checkReminder() {
 
 export async function listReminder(id) {
     try {
-        const reminders = await Reminder.findOne({ 'user': id }, { 'reminders.task': 1, 'reminders.reminderDate': 1 })
+        const reminders = await Reminder.findOne(
+            { 'user': id },
+            { 'reminders.task': 1, 'reminders.reminderDate': 1 }
+        )
+
         if (!reminders?.reminders?.length) {
             return "No reminders found for this user."
         }
 
         const taskList = reminders.reminders.map((item, index) => {
-            return `${index + 1}. Task: "${item.task}", Reminder Date: ${item.reminderDate}`
+            const reminderDate = moment(item.reminderDate).tz(TIMEZONE).format("YYYY-MM-DD HH:mm:ss")
+            return `${index + 1}. Task: "${item.task}", Reminder Date: ${reminderDate}`
         })
 
         return taskList.join('\n')
