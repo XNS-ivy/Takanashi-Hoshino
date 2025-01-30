@@ -21,8 +21,10 @@
   "homepage": "https://github.com/XNS-ivy/Shiroko-Sunaookami#readme",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.9",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "ffmpeg-static": "^5.2.0",
     "jimp": "^0.16.13",
     "link-preview-js": "^3.0.13",
     "moment": "^2.30.1",
