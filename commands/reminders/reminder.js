@@ -1,8 +1,8 @@
 import { handlingReminder } from '../../handlers/reminders/reminder.js'
 import { saveReminderToMongo } from '../../modules/mongodb/reminders/saveReminder.js'
-import { textMessage } from '../../models/waSockets/messageModel.js'
 import { deleteReminders, listReminder } from '../../modules/mongodb/reminders/checkReminder.js'
 import { shiroko } from '../../modules/waSockets/waSocket.js'
+import { sendTextMessage } from '../../modules/waSockets/messsageSender.js'
 
 export default {
     name: "reminder",
@@ -25,7 +25,6 @@ export default {
             const remindersList = await listReminder(msg.phoneNumber)
             response = remindersList.length > 0 ? remindersList : "No reminders found."
         }
-        const option = textMessage(response, client, msg.expired)
-        await shiroko.sendMessage(msg.remoteJid, option.text, option.options)
+        await sendTextMessage(msg.remoteJid, response, client, msg.expired)
     }
 }

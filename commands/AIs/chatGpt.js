@@ -1,7 +1,6 @@
 import axios from "axios"
 import { configDotenv } from "dotenv"
-import { shiroko } from "../../modules/waSockets/waSocket.js"
-import { textMessage } from "../../models/waSockets/messageModel.js"
+import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 
 export default {
     name: 'gpt',
@@ -9,14 +8,18 @@ export default {
     execute: async (msg, args, client) => {
         let response
         const request = args.join(" ")
-        
-        if(request.length <= 0){
+
+        if (request.length <= 0) {
             response = `no argument`
         } else {
             try {
                 const apiResponse = await axios.post(process.env.gpt_api, {
                     model: 'gpt-4o-mini',
                     messages: [
+                        {
+                            role: "developer",
+                            content: request,
+                        },
                         {
                             role: 'user',
                             content: request
@@ -28,7 +31,6 @@ export default {
                 response = `Error: ${error.message}`
             }
         }
-        const option = textMessage(response, client, msg.expired)
-        await shiroko.sendMessage(msg.remoteJid, option.text, option.options)
+        await sendTextMessage(msg.remoteJid, response, client, msg.expired)
     }
 }

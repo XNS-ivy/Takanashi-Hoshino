@@ -19,7 +19,6 @@ async function connectMongoDB() {
         console.log('Connected to MongoDB Atlas')
     } catch (err) {
         console.error('Failed to connect to MongoDB Atlas:', err)
-        process.exit(1)
     }
 }
 

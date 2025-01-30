@@ -1,6 +1,5 @@
 import { loadSubCommand } from "../../modules/subCommandLoader.js"
-import { textMessage } from "../../models/waSockets/messageModel.js"
-import { shiroko } from "../../modules/waSockets/waSocket.js"
+import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 
 export default {
     name: 'help',
@@ -22,7 +21,6 @@ export default {
             }
         }
 
-        const option = textMessage(response, client, msg.expired)
-        await shiroko.sendMessage(msg.remoteJid, option.text, option.options)
+        await sendTextMessage(msg.remoteJid, response, client, msg.expired)
     }
 }

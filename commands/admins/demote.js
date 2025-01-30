@@ -3,7 +3,7 @@ import { checkAdmins } from "../../handlers/waSockets/checkAdmins.js"
 import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 
 export default {
-    name: "kick",
+    name: "demote",
     type: "moderation",
     execute: async (msg, args, client) => {
         const isAdmin = await checkAdmins(msg)
@@ -13,10 +13,10 @@ export default {
                 const cleanNumber = arg.startsWith('@') ? arg.slice(1) : arg
                 return cleanNumber.endsWith('@s.whatsapp.net') ? cleanNumber : `${cleanNumber}@s.whatsapp.net`
             })
-            response = `:Bot Moderation:\n\nKicking: ${args}`
+            response = `:Bot Moderation:\n\nDemote: ${args}`
             await sendTextMessage(msg.remoteJid, response, client, msg.expired, modifiedArgs)
             try {
-                await shiroko.groupParticipantsUpdate(msg.remoteJid, modifiedArgs, 'remove')
+                await shiroko.groupParticipantsUpdate(msg.remoteJid, modifiedArgs, 'demote')
             } catch (error) {
                 response = `:Bot Moderation:\n\n Bot Not A Admin, Please Promote This Bot Become Admin.`
                 await sendTextMessage(msg.remoteJid, response, client, msg.expired)
