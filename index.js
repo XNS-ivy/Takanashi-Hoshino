@@ -9,3 +9,8 @@ await start().catch((error) => {
     console.error(error)
     process.exit(1)
 })
+
+process.on('rejectionHandled', (error) =>{
+    console.log(error)
+    process.exit(1)
+})
