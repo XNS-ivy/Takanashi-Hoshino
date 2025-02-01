@@ -6,16 +6,9 @@ import { loadCommands } from '../commandLoader.js'
 import fs from 'fs'
 import { sendReminder } from '../reminders/reminder.js'
 import schedule from 'node-schedule'
+import { generateCAIText } from '../axios/caiRequest.js'
 
-/**
- * @type {makeWASocket | null} WhatsApp socket instance, initialized after start().
- */
-let shiroko = null;
-
-/**
- * Starts the WhatsApp socket connection and sets up handlers.
- * @returns {Promise<void>} Initializes the WhatsApp bot.
- */
+let shiroko = {}
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
@@ -44,14 +37,19 @@ async function start() {
 
         shiroko.ev.on('messages.upsert', async (message) => {
             const msg = await handlingMessage(message)
+            const godMode = config.godMode === true ?? false
             if (msg?.text) {
                 if (!msg.text.startsWith(prefix)) {
+                    if (godMode && !msg.text.startsWith(prefix) && msg.mentionOrChatWithMe) {
+                        const caiText = await generateCAIText(msg.phoneNumber, msg.text)
+                        await shiroko.sendMessage(msg.remoteJid, { text: caiText }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
+                    }
                     return
                 }
 
                 const [commandName, ...args] = msg.text.slice(prefix.length).trim().split(/\s+/)
                 const command = commands.get(commandName)
-
+                console.log(godMode)
                 if (command) {
                     await command.execute(msg, args, message.messages[0])
                 } else {
