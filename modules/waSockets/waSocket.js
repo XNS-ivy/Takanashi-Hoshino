@@ -44,7 +44,7 @@ async function start() {
             const godMode = config.godMode === true ? true : false
             if (msg?.text) {
                 if (!msg.text.startsWith(prefix)) {
-                    if (godMode && !msg.text.startsWith(prefix) && msg.mentionOrChatWithMe) {
+                    if (godMode && msg.mentionOrChatWithMe && msg?.text != msg?.text?.startsWith(prefix)) {
                         const caiText = await generateCAIText(msg.phoneNumber, msg.text)
                         await hoshino.sendMessage(msg.remoteJid, { text: caiText }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                     }
