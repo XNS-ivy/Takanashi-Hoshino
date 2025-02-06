@@ -13,7 +13,7 @@ let hoshino = {}
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
-    const groupCache = new NodeCache({stdTTL: 5 * 60, useClones: false})
+    const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false })
     hoshino = makeWASocket({
         printQRInTerminal: true,
         auth: state,
@@ -65,10 +65,17 @@ async function start() {
             const metadata = await sock.groupMetadata(event.id)
             groupCache.set(event.id, metadata)
         })
-        
+
         hoshino.ev.on('group-participants.update', async (event) => {
             const metadata = await sock.groupMetadata(event.id)
             groupCache.set(event.id, metadata)
+        })
+        hoshino.ev.on('messages.update', async (event) => {
+            for (const { key, update } of event) {
+                if (update.pollUpdates) {
+                    await getMessage(key)
+                }
+            }
         })
 
         schedule.scheduleJob('*/5 * * * * *', async () => {

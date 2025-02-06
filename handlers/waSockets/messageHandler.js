@@ -13,7 +13,6 @@ function customMessage(msg) {
     const name = messageObj?.pushName
     const { remoteJid, id, participant } = messageObj?.key || {}
     const pNumber = participant ?? remoteJid
-
     const objectMessageType =
         Object.keys(messageObj?.message || {})[0] == 'senderKeyDistributionMessage' ?
             Object.keys(messageObj?.message || {})[2] : Object.keys(messageObj?.message || {})[0]
@@ -31,22 +30,23 @@ function customMessage(msg) {
         (['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'].includes(objectMessageType) &&
             messageObj?.message?.[objectMessageType]?.contextInfo?.expiration) || 0
 
-            const myNumber = hoshino.user.id.split(':')[0]
-            
-            const quotedMessageData = messageObj?.message?.extendedTextMessage?.contextInfo ||
-                messageObj?.message?.[objectMessageType]?.contextInfo
-            
-            const quotedMessage = !!(
-                quotedMessageData?.quotedMessage &&
-                quotedMessageData?.participant &&
-                quotedMessageData?.participant.split('@')[0] === myNumber &&
-                quotedMessageData?.quotedMessage?.conversation
-            )
-            
-            const privateChat = remoteJid && remoteJid.endsWith('@s.whatsapp.net')
-            
-            const mentionOrChatWithMe = quotedMessage || privateChat            
+    const myNumber = hoshino.user.id.split(':')[0]
 
+    const quotedMessageData = messageObj?.message?.extendedTextMessage?.contextInfo ||
+        messageObj?.message?.[objectMessageType]?.contextInfo
+    const quotedMessage = !!(
+        quotedMessageData?.quotedMessage &&
+        quotedMessageData?.participant &&
+        quotedMessageData?.participant.split('@')[0] === myNumber &&
+        quotedMessageData?.quotedMessage?.conversation
+    )
+
+    const privateChat = remoteJid && remoteJid.endsWith('@s.whatsapp.net')
+
+    let mentionOrChatWithMe = quotedMessage || privateChat
+    if (privateChat && name === hoshino.user.name) {
+        mentionOrChatWithMe = false
+    }
     return {
         name: name ?? undefined,
         remoteJid: remoteJid ?? undefined,
@@ -57,5 +57,4 @@ function customMessage(msg) {
         expired: expiration,
         mentionOrChatWithMe,
     }
-
 }
