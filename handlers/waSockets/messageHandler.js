@@ -1,4 +1,4 @@
-import { shiroko } from "../../modules/waSockets/waSocket.js"
+import { hoshino } from "../../modules/waSockets/waSocket.js"
 
 export async function handlingMessage(msg) {
     if (!msg?.messages[0] || msg?.messages[0]?.key?.remoteJid === 'status@broadcast' || !msg?.messages[0]?.pushName) {
@@ -31,7 +31,7 @@ function customMessage(msg) {
         (['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'].includes(objectMessageType) &&
             messageObj?.message?.[objectMessageType]?.contextInfo?.expiration) || 0
 
-            const myNumber = shiroko.user.id.split(':')[0]
+            const myNumber = hoshino.user.id.split(':')[0]
             
             const quotedMessageData = messageObj?.message?.extendedTextMessage?.contextInfo ||
                 messageObj?.message?.[objectMessageType]?.contextInfo

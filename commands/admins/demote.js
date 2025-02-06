@@ -1,4 +1,4 @@
-import { shiroko } from "../../modules/waSockets/waSocket.js"
+import { hoshino } from "../../modules/waSockets/waSocket.js"
 import { checkAdmins } from "../../handlers/waSockets/checkAdmins.js"
 import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 
@@ -16,7 +16,7 @@ export default {
             response = `:Bot Moderation:\n\nDemote: ${args}`
             await sendTextMessage(msg.remoteJid, response, client, msg.expired, modifiedArgs)
             try {
-                await shiroko.groupParticipantsUpdate(msg.remoteJid, modifiedArgs, 'demote')
+                await hoshino.groupParticipantsUpdate(msg.remoteJid, modifiedArgs, 'demote')
             } catch (error) {
                 response = `:Bot Moderation:\n\n Bot Not A Admin, Please Promote This Bot Become Admin.`
                 await sendTextMessage(msg.remoteJid, response, client, msg.expired)

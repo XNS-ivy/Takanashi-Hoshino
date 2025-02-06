@@ -1,7 +1,6 @@
 import { handlingReminder } from '../../handlers/reminders/reminder.js'
 import { saveReminderToMongo } from '../../modules/mongodb/reminders/saveReminder.js'
 import { deleteReminders, listReminder } from '../../modules/mongodb/reminders/checkReminder.js'
-import { shiroko } from '../../modules/waSockets/waSocket.js'
 import { sendTextMessage } from '../../modules/waSockets/messsageSender.js'
 
 export default {

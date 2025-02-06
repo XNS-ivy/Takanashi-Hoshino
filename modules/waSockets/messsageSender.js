@@ -1,4 +1,4 @@
-import { shiroko } from "./waSocket.js"
+import { hoshino } from "./waSocket.js"
 
 async function sendImageMessage(url, client, expired, caption) {
     const content = {
@@ -21,9 +21,9 @@ async function sendTextMessage(id, response, client, expired, mentions) {
         options: { quoted: client, ephemeralExpiration: expired }
     }
     try {
-        await shiroko.sendMessage(id, content.text, content.options)
+        await hoshino.sendMessage(id, content.text, content.options)
     } catch (error) {
-        await shiroko.sendMessage(id, { text: `Error Sending Mesage: ${error}` }, content.options)
+        await hoshino.sendMessage(id, { text: `Error Sending Mesage: ${error}` }, content.options)
     }
 }
 

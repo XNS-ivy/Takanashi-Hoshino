@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const config = JSON.parse(fs.readFileSync('./shirokoConfig.json', 'utf-8'))
+const config = JSON.parse(fs.readFileSync('./hoshinoConfig.json', 'utf-8'))
 const prefix = config.prefix
 
 export default {
