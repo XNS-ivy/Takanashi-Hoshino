@@ -5,6 +5,7 @@ import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 export default {
     name: 'gpt',
     type: "ai",
+    usage: "`gpt` `text`",
     execute: async (msg, args, client) => {
         let response
         const request = args.join(" ")

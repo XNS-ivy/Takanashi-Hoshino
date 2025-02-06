@@ -5,6 +5,7 @@ import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 export default {
     name: "kick",
     type: "moderation",
+    usage: "`kick` `@mention1` `@mention2`",
     execute: async (msg, args, client) => {
         const isAdmin = await checkAdmins(msg)
         let response

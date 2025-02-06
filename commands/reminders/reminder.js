@@ -6,6 +6,7 @@ import { sendTextMessage } from '../../modules/waSockets/messsageSender.js'
 export default {
     name: "reminder",
     type: "reminder",
+    usage: "reminder `query`",
     execute: async (msg, args, client) => {
         const taskAndTime = await handlingReminder(args)
         let response = taskAndTime

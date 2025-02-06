@@ -7,11 +7,13 @@ import fs from 'fs'
 import { sendReminder } from '../reminders/reminder.js'
 import schedule from 'node-schedule'
 import { generateCAIText } from '../axios/caiRequest.js'
+import NodeCache from 'node-cache'
 
 let hoshino = {}
 
 async function start() {
     const { state, saveCreds } = await useMultiFileAuthState('auth')
+    const groupCache = new NodeCache({stdTTL: 5 * 60, useClones: false})
     hoshino = makeWASocket({
         printQRInTerminal: true,
         auth: state,
@@ -19,6 +21,8 @@ async function start() {
         browser: ['hoshino', 'Chrome', '1.0'],
         emitOwnEvents: false,
         generateHighQualityLinkPreview: true,
+        cachedGroupMetadata: async (jid) => groupCache.get(jid),
+        getMessage: async (key) => await getMessageFromStore(key),
     })
 
     const config = JSON.parse(fs.readFileSync('./hoshinoConfig.json', 'utf-8'))
@@ -56,6 +60,17 @@ async function start() {
                 }
             }
         })
+
+        hoshino.ev.on('groups.update', async ([event]) => {
+            const metadata = await sock.groupMetadata(event.id)
+            groupCache.set(event.id, metadata)
+        })
+        
+        hoshino.ev.on('group-participants.update', async (event) => {
+            const metadata = await sock.groupMetadata(event.id)
+            groupCache.set(event.id, metadata)
+        })
+
         schedule.scheduleJob('*/5 * * * * *', async () => {
             await sendReminder(hoshino)
         })

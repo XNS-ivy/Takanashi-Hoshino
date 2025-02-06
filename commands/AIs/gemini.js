@@ -5,6 +5,7 @@ import { sendTextMessage } from "../../modules/waSockets/messsageSender.js"
 export default {
     name: 'gemini',
     type: 'ai',
+    usage: "`gemini` `text`",
     execute: async (msg, args, client) => {
         const prompt = args.join(' ')
         const requestApi = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.gemini_api}`, { contents: [{ parts: [{ text: prompt }] }] })

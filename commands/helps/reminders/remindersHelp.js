@@ -10,24 +10,24 @@ export default {
     execute: (args) => {
         const query = args[0]
         let description = 'Provides usage details for the remind command.'
-        let usage = prefix + 'remind `query` `task_name` - `time_format`'
-        let example = prefix + '`remind add Homework - 2h`'
+        let usage = prefix + 'reminder `query` `task_name` - `time_format`'
+        let example = prefix + '`reminder add Homework - 2h`'
 
         if (query) {
             usage = query === 'add'
-                ? prefix + 'remind `add` `task_name` - `time_format`'
+                ? prefix + 'reminder `add` `task_name` - `time_format`'
                 : query === 'delete'
-                    ? prefix + 'remind `delete` `task_name`'
+                    ? prefix + 'reminder `delete` `task_name`'
                     : query === 'list'
-                        ? 'remind `list`'
+                        ? 'reminder `list`'
                         : usage
 
             example = query === 'add'
-                ? 'remind add Homework - 2h'
+                ? 'reminder add Homework - 2h'
                 : query === 'delete'
-                    ? 'remind delete Homework'
+                    ? 'reminder delete Homework'
                     : query === 'list'
-                        ? 'remind list'
+                        ? 'reminder list'
                         : example
         }
 
