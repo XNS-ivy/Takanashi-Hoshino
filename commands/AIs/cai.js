@@ -7,6 +7,8 @@ export default {
     usage: "`cai` `text`",
     execute: async (msg, args, client) => {
         const text = await generateCAIText(msg.phoneNumber, args.join(' '))
-        await sendTextMessage(msg.remoteJid, text, client, msg.expired)
+        setTimeout(async () => {
+            await sendTextMessage(msg.remoteJid, text, client, msg.expired)
+        }, 1000)
     }
 }
