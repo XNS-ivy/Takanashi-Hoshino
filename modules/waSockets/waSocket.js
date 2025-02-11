@@ -40,11 +40,16 @@ async function start() {
         });
 
         hoshino.ev.on('messages.upsert', async (message) => {
-            const msg = await handlingMessage(message)
-            const godMode = config.godMode === true ? true : false
-            if (msg?.text) {
-                if (!msg.text.startsWith(prefix)) {
-                    if (godMode && msg.mentionOrChatWithMe && msg?.text != msg?.text?.startsWith(prefix)) {
+            try {
+                const msg = await handlingMessage(message)
+                if (!msg?.text) return
+
+                const fetchText = [...msg.text]
+                const isHitManyPrefix = fetchText.length > 1 && fetchText[1] === prefix
+
+                const godMode = config.godMode === true
+                if (!msg.text.startsWith(prefix) || isHitManyPrefix || !fetchText[1]){
+                    if (godMode && msg.mentionOrChatWithMe) {
                         const caiText = await generateCAIText(msg.phoneNumber, msg.text)
                         await hoshino.sendMessage(msg.remoteJid, { text: caiText }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                     }
@@ -53,21 +58,25 @@ async function start() {
 
                 const [commandName, ...args] = msg.text.slice(prefix.length).trim().split(/\s+/)
                 const command = commands.get(commandName)
+
                 if (command) {
                     await command.execute(msg, args, message.messages[0])
                 } else {
                     await hoshino.sendMessage(msg.remoteJid, { text: "Command Not Found!" }, { quoted: message.messages[0], ephemeralExpiration: msg.expired })
                 }
+            } catch (error) {
+                console.error('Error in messages.upsert:', error)
             }
         })
 
+
         hoshino.ev.on('groups.update', async ([event]) => {
-            const metadata = await sock.groupMetadata(event.id)
+            const metadata = await hoshino.groupMetadata(event.id)
             groupCache.set(event.id, metadata)
         })
 
         hoshino.ev.on('group-participants.update', async (event) => {
-            const metadata = await sock.groupMetadata(event.id)
+            const metadata = await hoshino.groupMetadata(event.id)
             groupCache.set(event.id, metadata)
         })
         hoshino.ev.on('messages.update', async (event) => {
