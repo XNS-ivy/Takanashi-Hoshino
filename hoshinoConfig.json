@@ -1,5 +1,5 @@
 {
     "name" : "Shiroko",
-    "prefix" : ".",
+    "prefix" : "$",
     "godMode": true
 }

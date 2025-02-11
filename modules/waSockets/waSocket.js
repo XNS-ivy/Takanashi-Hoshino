@@ -3,11 +3,11 @@ import pino from 'pino'
 import { connectionHandle } from './socketConnection.js'
 import { handlingMessage } from '../../handlers/waSockets/messageHandler.js'
 import { loadCommands } from '../commandLoader.js'
-import fs from 'fs'
 import { sendReminder } from '../reminders/reminder.js'
 import schedule from 'node-schedule'
 import { generateCAIText } from '../axios/caiRequest.js'
 import NodeCache from 'node-cache'
+import config from '../loadConfig.js'
 
 let hoshino = {}
 
@@ -25,7 +25,6 @@ async function start() {
         getMessage: async (key) => await getMessageFromStore(key),
     })
 
-    const config = JSON.parse(fs.readFileSync('./hoshinoConfig.json', 'utf-8'))
     const prefix = config.prefix
 
     const commands = await loadCommands('./commands')
