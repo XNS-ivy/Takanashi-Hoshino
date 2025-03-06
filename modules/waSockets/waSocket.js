@@ -21,7 +21,6 @@ async function start() {
         browser: ['hoshino', 'Chrome', '1.0'],
         emitOwnEvents: false,
         generateHighQualityLinkPreview: true,
-        cachedGroupMetadata: async (jid) => groupCache.get(jid),
         getMessage: async (key) => await getMessageFromStore(key),
     })
 
@@ -68,16 +67,6 @@ async function start() {
             }
         })
 
-
-        hoshino.ev.on('groups.update', async ([event]) => {
-            const metadata = await hoshino.groupMetadata(event.id)
-            groupCache.set(event.id, metadata)
-        })
-
-        hoshino.ev.on('group-participants.update', async (event) => {
-            const metadata = await hoshino.groupMetadata(event.id)
-            groupCache.set(event.id, metadata)
-        })
         hoshino.ev.on('messages.update', async (event) => {
             for (const { key, update } of event) {
                 if (update.pollUpdates) {
